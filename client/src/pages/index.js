@@ -4,14 +4,13 @@ import {
   Box,
   Button,
   Card,
-  CardHeader,
   CardMedia,
   FormControl,
   FormLabel,
   Input,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { blue } from '@material-ui/core/colors';
+import Compressor from 'compressorjs';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,19 +51,32 @@ const IndexPage = () => {
     e.preventDefault();
     const url = 'http://localhost:3030/submit';
 
-    let form_data = new FormData(formRef.current);
+    const text = e.target.text.value;
+    const file = e.target.test.files[0];
 
-    axios({
-      url,
-      method: 'post',
-      headers: { 'Content-Type': 'multipart/form-data' },
-      data: form_data,
-    })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => console.error(err));
-    window.location.reload();
+    new Compressor(file, {
+      quality: 0.5,
+      success(result) {
+        let form_data = new FormData();
+        form_data.append('text', text);
+        form_data.append('test', result, result.name);
+
+        axios({
+          url,
+          method: 'post',
+          headers: { 'Content-Type': 'multipart/form-data' },
+          data: form_data,
+        })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => console.error(err));
+        window.location.reload();
+      },
+      error(err) {
+        console.error(err);
+      },
+    });
   };
 
   useEffect(() => {
@@ -85,7 +97,7 @@ const IndexPage = () => {
           </FormControl>
           <FormControl>
             <FormLabel>File</FormLabel>
-            <Input type='file' name='test' id='test' />
+            <Input type='file' name='test' id='test' accept='image/*' />
           </FormControl>
           <FormControl>
             <Button type='submit' color='primary' variant='contained'>

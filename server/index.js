@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import Test from './models/Test.js';
 import path from 'path';
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -29,8 +30,8 @@ mongoose
   .catch(err => console.error(err));
 
 // * Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(cors());
 
