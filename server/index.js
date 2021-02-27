@@ -3,7 +3,6 @@ import multer from 'multer';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import Test from './models/Test.js';
-import path from 'path';
 import bodyParser from 'body-parser';
 
 const app = express();
